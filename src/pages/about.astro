@@ -1,4 +1,6 @@
 ---
+import '../styles/global.css';
+
 const pageTitle = "关于我";
 
 const identity = {
@@ -8,6 +10,13 @@ const identity = {
   hobbies: ["鸟鸟", "摄摄", ],
 };
 const happy = true;
+
+
+const skills = ["HTML", "CSS", "JavaScript", "React", "Astro", "Writing Docs"];
+
+const skillColor = "crimson";
+const fontWeight = "bold";
+const textCase = "uppercase";
 ---
 
 <html lang="zh-cn">
@@ -22,6 +31,11 @@ const happy = true;
         color: purple;
         font-size: 4rem;
       }
+       .skill {
+            color: var(--skillColor);
+            font-weight: var(--fontWeight);
+            text-transform: var(--textCase);    
+              }
     </style>
   </head>
   <body>
@@ -34,19 +48,25 @@ const happy = true;
 
   <p>我正在学习 Astro 的入门教程。这是我网站上的第二个页面，也是我自己建立的第一页面！</p>
 
-  <p>随着我完成更多教程，该站点将更新，所以请继续查看我的旅程将如何进行吧！</p>
+  <p>随着我完成更多，该站点将更新，所以请继续查看我的旅程将如何进行吧！</p>
   <p>以下关于我：</p>
   <ul>
   <li>名字: {identity.firstName}</li>
   <li>职业: {identity.occupation}</li>
   <li>爱好:
   <ul>
+
       {identity.hobbies.map((hobby) => (
         <li>{hobby}</li>
       ))}
-   </ul>
+  </ul>
+
   </li> 
   {happy && <p>我非常乐意学习 Astro！</p>}
+
+<p>我的技能是：</p>
+<ul>
+   {skills.map((skill) => <li class="skill">{skill}</li>)}
 </ul>
   </body>
 </html>
