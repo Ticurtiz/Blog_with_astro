@@ -1,5 +1,9 @@
 ---
 import '../styles/global.css';
+import Navigation from '../components/Navigation.astro';
+import Footer from '../components/Footer.astro';  
+import BaseLayout from '../layouts/BaseLayout.astro';
+const pageTitle = "首页";
 ---
 
 <html lang="zh-cn">
@@ -14,11 +18,18 @@ import '../styles/global.css';
     </style>
 
   </head>
+   
   <body>
-      <a href="/">首页</a>
-      <a href="/about/">关于</a>
-      <a href="/blog/">博客</a>
+   <Navigation />
       
-    <h1>钛柯的站点，装修中...</h1>
+  <h1>钛柯的站点，装修中...</h1>
+    
+  <h2>我在很努力地装修</h2>
+
+</BaseLayout>
+  <Footer />
+  <script>
+     import "../scripts/menu.js";
+     </script>
   </body>
 </html>
