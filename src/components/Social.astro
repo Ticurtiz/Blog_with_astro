@@ -1,4 +1,18 @@
 ---
 const { platform, username } = Astro.props;
 ---
-<a href={`https://www.bilibili.com/`}>{platform}</a>
+<style>
+.footer-link {
+  color: #c7ffd5 !important;           /* 默认绿色 */
+  text-decoration: none !important;
+  position: relative;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+.footer-link:hover {
+  color: #c1ffd0 !important;           /* 悬停变亮绿 */
+  text-shadow: 0 0 10px rgb(0, 255, 242);          /* 发光 */
+  transform: translateY(-1px);
+}
+</style>
+<a href={`https://www.bilibili.com/`} class="footer-link">{platform}</a>

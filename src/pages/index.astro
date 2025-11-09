@@ -1,35 +1,105 @@
 ---
+// 完全保留你原来的代码
 import '../styles/global.css';
 import Navigation from '../components/Navigation.astro';
 import Footer from '../components/Footer.astro';  
+import ASCIIText from '../components/ASCIIText.jsx';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ArcticAurora from '../components/ArcticAurora.jsx';
 const pageTitle = "首页";
 ---
 
 <html lang="zh-cn">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type ="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content = {Astro.generator} >
-    <title>Astro</title>
-    <style>
-      
-    </style>
+    <meta name="generator" content={Astro.generator}>
+    <title>{pageTitle}</title>
 
+    <link rel="stylesheet" href="/fonts.css" />
+
+    <style>   
+
+
+        .site-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1; /* 确保它在所有东西的最底层 */
+  background: #000000; /* 纯黑色 */
+}
+.ascii-bg {
+  position: fixed ;
+  inset: 0 ;     
+   z-index: -1;     
+
+}
+
+      {
+        font-family: 'JetBrains Mono', monospace !important;
+        color: #ffffff !important;
+      }
+       h1 {
+        color: rgb(255, 255, 255);
+        font-size: 4rem;
+        font-family: 'JetBrains Mono', monospace;
+        margin: 0 0 1rem 0;
+      }
+
+      .subtitle {
+        color: rgb(255, 255, 255);
+        font-size: 2rem;
+        margin: 0.5rem 0;
+        font-family: 'JetBrains Mono', monospace;
+      }
+      .subtext {
+        color: rgb(255, 255, 255);
+        font-size: 1.2rem;
+        font-family: 'JetBrains Mono', monospace;
+        margin: 0;
+      }
+    </style>
   </head>
    
   <body>
-   <Navigation />
-      
-  <h1>钛柯的站点，装修中...</h1>
-    
-  <h2>我在很努力地装修</h2>
+    <div class="site-backdrop"></div>
+    <div class="z-50 fixed top-0 left-0 right-0" >
+    <Navigation />
+    </div>
 
-</BaseLayout>
-  <Footer />
-  <script>
-     import "../scripts/menu.js";
-     </script>
+    <div class="z--1" >
+      <ArcticAurora
+      colorStops={["#50DAA5","#BF78F5","#6514E8"]}
+      amplitude={0.5}
+      blend={0.9}
+      speed={2}
+      client:load 
+    />
+    </div>
+
+<div class=" relative items-center  text-center px-6 bg-transparent">
+  <h1>WELCUM!</h1>
+  <p class="subtitle">Under Construction...</p>
+  <p class="subtext">I am working hardly...</p>
+</div>
+      
+      <div class="ascii-bg">
+        <ASCIIText 
+          client:load
+          text="t4IK3"
+          textFontSize={60}
+          planeBaseHeight={8}
+          enableWaves={true}  
+          asciiFontSize={10}
+        />
+      </div>
+   
+<div class="fixed inset-x-0 bottom-0 z-50">
+
+    <Footer />
+  </div>
+    <script>
+  
+    </script>
   </body>
 </html>

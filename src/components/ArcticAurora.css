@@ -1,0 +1,16 @@
+/* src/components/ArcticAurora.css */
+.arctic-aurora-container {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+  overflow: hidden;
+}
+
+.arctic-aurora-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+}

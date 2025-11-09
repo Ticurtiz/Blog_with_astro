@@ -3,8 +3,36 @@ const platform = "github";
 const username = "钛柯";
 import Social from './Social.astro';
 ---
-
+ <style>
+  .z-50 {
+  z-index: 50 ;
+}
+  .linkcolor {
+    color: #0090fe;
+  }
+.footer-link {
+  color: #c7ffd5 !important;           /* 默认绿色 */
+  text-decoration: none !important;
+  position: relative;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+.footer-link:hover {
+  color: #c1ffd0 !important;           /* 悬停变亮绿 */
+  text-shadow: 0 0 10px rgb(0, 255, 242);          /* 发光 */
+  transform: translateY(-1px);
+}
+p{
+        color: rgb(255, 255, 255);
+        font-family: 'JetBrains Mono', monospace;
+        margin: 5;
+  }
+</style>
 <footer>
-  <p>在 <a href={`https://github.com/Ticurtiz`}>{platform}</a> 上，了解有关我的项目的更多信息</p>
-   <Social platform="91高级会员专区" username="NULL!" />
+  <div class="z-50 linkcolor">
+  <p>
+    © 2025 TAIKE |
+    On <a href={`https://github.com/Ticurtiz`} class="footer-link">{platform}</a>, learn more about my projects</p>
+    <Social platform="Only_for_91vip"  username="NULL!" />
+   </div>
 </footer>

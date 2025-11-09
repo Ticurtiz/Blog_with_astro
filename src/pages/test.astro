@@ -1,0 +1,22 @@
+--- 
+import ASCIIText from '../components/ASCIIText.jsx';
+---
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Test</title>
+    <style>
+      * { margin:0; padding:0; }
+      html, body, #root { width:100%; height:100vh; background:#000; overflow:hidden; }
+    </style>
+  </head>
+  <body>
+
+  <ASCIIText client:load
+  text='hello_world'
+  enableWaves={true}
+  asciiFontSize={8}
+/>
+  </body>
+</html>
