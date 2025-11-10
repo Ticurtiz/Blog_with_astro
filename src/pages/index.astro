@@ -1,12 +1,22 @@
 ---
 // 完全保留你原来的代码
 import '../styles/global.css';
-import Navigation from '../components/Navigation.astro';
 import Footer from '../components/Footer.astro';  
 import ASCIIText from '../components/ASCIIText.jsx';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ArcticAurora from '../components/ArcticAurora.jsx';
+import StaggeredMenu from '../components/StaggeredMenu.jsx';
 const pageTitle = "首页";
+const menuItems = [
+  { label: 'Index', ariaLabel: 'Go to home page', link: '/' },
+  { label: 'About', ariaLabel: 'Learn about us', link: '/about/' },
+  { label: 'Blog', ariaLabel: 'View blog', link: '/blog/' }
+];
+
+const socialItems = [
+  { label: 'GitHub', link: 'https://github.com' },
+
+];
 ---
 
 <html lang="zh-cn">
@@ -68,8 +78,24 @@ const pageTitle = "首页";
    
   <body>
     <div class="site-backdrop"></div>
-    <div class="z-50 fixed top-0 left-0 right-0" >
-    <Navigation />
+  <StaggeredMenu
+    position="right"
+    items={menuItems}
+    socialItems={socialItems}
+    displaySocials={true}
+    displayItemNumbering={true}
+    menuButtonColor="#ffffff"
+    openMenuButtonColor="#cccccc"
+    changeMenuColorOnOpen={true}
+    colors={["#B19EEF", "#5227FF"]}
+    logoUrl="/favicon.svg"
+    accentColor="#4ECDC4"
+    onMenuOpen={() => console.log('Menu opened')}
+    onMenuClose={() => console.log('Menu closed')}
+    client:load
+  />
+</div>
+
     </div>
 
     <div class="z--1" >

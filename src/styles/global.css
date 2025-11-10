@@ -21,8 +21,8 @@ body {
   background-color: transparent;
   margin: 0 auto;
   width: 100%;
-  max-width: 160ch;
-  padding: 0rem;
+  max-width: 120ch;
+  padding: 2rem;
   line-height: 1.5;
 }
 
@@ -34,58 +34,5 @@ h1 {
   margin: 1rem 0;
   font-size: 2.5rem;
 }
-/* 导航样式 */
-.menu {
-  background-color: #0d0950;
-  border: none;
-  color: #fff;
-  font-size: 1.2rem;
-  font-weight: bold;
-  padding: 5px 10px;
-}
 
-.nav-links {
-  width: 100%;
-  display: none;
-  padding-left: 25rem;
-  position: absolute;
-}
-
-.nav-links a {
-  display: block;
-  text-align: center;
-  padding: 10px 0;
-  text-decoration: none;
-  font-size: 2rem;
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 700; /* 使用 Bold.woff2 */
-
-  text-transform: uppercase;
-  color: #ffffff;
-}
-
-.nav-links a:hover,
-.nav-links a:focus {
-
-  transform: scale(1.2);           /* 字体放大 */
-  transition: transform 0.2s ease; /* 平滑动画 */
-  display: inline-block;       
-}
-
-@media screen and (min-width: 636px) {
-  .nav-links {
-    margin-left: 5em;
-    display: block;
-    position: static;
-    width: auto;
-    background: none;
-  }
-
-  .nav-links a {
-    display: inline-block;
-    padding: 15px 20px;
-  }
-}
-  .menu {
-    display: none;
-  }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
