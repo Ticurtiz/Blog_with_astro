@@ -8,10 +8,11 @@ const { platform, username } = Astro.props;
   position: relative;
   transition: all 0.3s ease;
   font-weight: 500;
+  pointer-events: all !important;
 }
 .footer-link:hover {
   color: #c1ffd0 !important;           /* 悬停变亮绿 */
-  text-shadow: 0 0 10px rgb(0, 255, 242);          /* 发光 */
+  text-shadow: 0 0 1px rgb(169, 246, 221);          /* 发光 */
   transform: translateY(-1px);
 }
 </style>

@@ -15,5 +15,9 @@
     "gsap": "^3.13.0",
     "ogl": "^1.0.11",
     "three": "^0.181.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.4",
+    "typescript": "^5.9.3"
   }
 }

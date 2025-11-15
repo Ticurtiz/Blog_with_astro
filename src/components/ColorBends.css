@@ -1,0 +1,10 @@
+/* src/components/ColorBends.css */
+.color-bends-container {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: -10 !important; /* 比所有内容都低 */
+    pointer-events: all !important; /* 让鼠标事件穿透 */
+  overflow: hidden !important;
+}

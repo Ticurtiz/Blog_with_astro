@@ -3,7 +3,7 @@
 import '../styles/global.css';
 import Footer from '../components/Footer.astro';  
 import ASCIIText from '../components/ASCIIText.jsx';
-import BaseLayout from '../layouts/BaseLayout.astro';
+import ColorBends from '../components/ColorBends';
 import ArcticAurora from '../components/ArcticAurora.jsx';
 import StaggeredMenu from '../components/StaggeredMenu.jsx';
 const pageTitle = "首页";
@@ -35,7 +35,7 @@ const socialItems = [
         .site-backdrop {
   position: fixed;
   inset: 0;
-  z-index: -1; /* 确保它在所有东西的最底层 */
+  z-index: -20; /* 确保它在所有东西的最底层 */
   background: #000000; /* 纯黑色 */
 }
 .ascii-bg {
@@ -77,54 +77,18 @@ const socialItems = [
   </head>
    
   <body>
+    
     <div class="site-backdrop"></div>
-  <StaggeredMenu
-    position="right"
-    items={menuItems}
-    socialItems={socialItems}
-    displaySocials={true}
-    displayItemNumbering={true}
-    menuButtonColor="#ffffff"
-    openMenuButtonColor="#cccccc"
-    changeMenuColorOnOpen={true}
-    colors={["#B19EEF", "#5227FF"]}
-    logoUrl="/favicon.svg"
-    accentColor="#4ECDC4"
-    onMenuOpen={() => console.log('Menu opened')}
-    onMenuClose={() => console.log('Menu closed')}
-    client:load
-  />
+
 </div>
-
-    </div>
-
-    <div class="z--1" >
-      <ArcticAurora
-      colorStops={["#50DAA5","#BF78F5","#6514E8"]}
-      amplitude={0.5}
-      blend={0.9}
-      speed={2}
-      client:load 
-    />
-    </div>
+<ColorBends client:load className="ascii-bg" style={{}} />
 
 <div class=" relative items-center  text-center px-6 bg-transparent">
   <h1>Welcum!</h1>
   <p class="subtitle">Under Construction...</p>
   <p class="subtext">I am working hardly...</p>
 </div>
-      
-      <div class="ascii-bg">
-        <ASCIIText 
-          client:load
-          text="你好!"
-          textFontSize={50}
-          planeBaseHeight={6}
-          enableWaves={true}  
-          asciiFontSize={7}
-        />
-      </div>
-   
+
 <div class="fixed inset-x-0 bottom-0 z-50">
 
     <Footer />

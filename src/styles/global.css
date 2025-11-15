@@ -21,9 +21,10 @@ body {
   background-color: transparent;
   margin: 0 auto;
   width: 100%;
-  max-width: 120ch;
+  max-width: 130ch;
   padding: 2rem;
   line-height: 1.5;
+  pointer-events: none;
 }
 
 * {
