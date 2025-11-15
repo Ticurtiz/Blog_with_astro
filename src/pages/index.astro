@@ -6,6 +6,7 @@ import ASCIIText from '../components/ASCIIText.jsx';
 import ColorBends from '../components/ColorBends';
 import ArcticAurora from '../components/ArcticAurora.jsx';
 import StaggeredMenu from '../components/StaggeredMenu.jsx';
+import TextType from '../components/TextType.jsx';
 const pageTitle = "首页";
 const menuItems = [
   { label: 'Index', ariaLabel: 'Go to home page', link: '/' },
@@ -77,15 +78,32 @@ const socialItems = [
   </head>
    
   <body>
+    </div>
+<ColorBends client:load className="ascii-bg" style={{}} />
     
     <div class="site-backdrop"></div>
 
-</div>
-<ColorBends client:load className="ascii-bg" style={{}} />
-
-<div class=" relative items-center  text-center px-6 bg-transparent">
-  <h1>Welcum!</h1>
-  <p class="subtitle">Under Construction...</p>
+  <h1><div class=" relative items-center  text-center px-6 ">
+  <TextType 
+  client:load
+  text={["Welcum to TAIKE"]}
+  typingSpeed={39}
+  pauseDuration={1000}
+  showCursor={false}
+  cursorCharacter="|"
+  variableSpeed={false}
+  onSentenceComplete={() => {}}
+  z-index={50}
+/></h1>
+  <p class="subtitle">  
+    <TextType 
+    client:load
+    initialDelay={330}
+    typingSpeed={39}
+  text={["Under Construction..."]}
+  variableSpeed={false}
+  onSentenceComplete={() => {}}/>  
+  </p>
   <p class="subtext">I am working hardly...</p>
 </div>
 
