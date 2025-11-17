@@ -2,10 +2,8 @@
 // 完全保留你原来的代码
 import '../styles/global.css';
 import Footer from '../components/Footer.astro';  
-import ASCIIText from '../components/ASCIIText.jsx';
 import ColorBends from '../components/ColorBends';
-import ArcticAurora from '../components/ArcticAurora.jsx';
-import StaggeredMenu from '../components/StaggeredMenu.jsx';
+import BaseLayout from '../layouts/BaseLayout.astro';
 import TextType from '../components/TextType.jsx';
 const pageTitle = "首页";
 const menuItems = [
@@ -19,7 +17,7 @@ const socialItems = [
 
 ];
 ---
-
+<BaseLayout title="首页">
 <html lang="zh-cn">
   <head>
     <meta charset="utf-8" />
@@ -38,12 +36,6 @@ const socialItems = [
   inset: 0;
   z-index: -20; /* 确保它在所有东西的最底层 */
   background: #000000; /* 纯黑色 */
-}
-.ascii-bg {
-  position: fixed ;
-  inset: 0 ;     
-   z-index: -1;     
-
 }
 
       {
@@ -101,9 +93,12 @@ const socialItems = [
     initialDelay={330}
     typingSpeed={39}
   text={["Under Construction..."]}
+  showCursor={false}
   variableSpeed={false}
-  onSentenceComplete={() => {}}/>  
-  </p>
+  onSentenceComplete={() => {}}
+
+
+  
   <p class="subtext">I am working hardly...</p>
 </div>
 

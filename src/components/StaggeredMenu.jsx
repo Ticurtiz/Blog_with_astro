@@ -1,300 +1,409 @@
-// src/components/StaggeredMenu.jsx
-// ─────────────────────────────────────────────────────────────────────────────
-// 100% 官网 https://reactbits.dev/components/staggered-menu 像素级复制
-// 提取自官方 Usage 代码 + 视觉细节：
-// - 按钮：左侧 fixed, "Menu" 文字 + 三线图标, hover scale-110 + shadow
-// - 菜单：左侧滑出 (x: -100% → 0), 白底 (bg-white), 覆盖全屏 (z-50)
-// - Overlay：彩色覆盖 (rgba(0,0,0,0.5) + 紫灰渐变, blur)
-// - 链接动画：stagger opacity/x + scale(1.05) bounce, 黑字 hover #6366F1 (indigo)
-// - 字体：Inter bold, text-3xl uppercase
-// - 缺失修复：完整 spring physics, 多 ease 曲线, 字符级 stagger (如果适用)
-// - 扩展：详细 inline styles + 注释匹配官网 Tailwind
-// ─────────────────────────────────────────────────────────────────────────────
+import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import { gsap } from 'gsap';
+import './StaggeredMenu.css';
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+export const StaggeredMenu = ({
+  position = 'right',
+  colors = ['#B19EEF', '#5227FF'],
+  items = [],
+  socialItems = [],
+  displaySocials = true,
+  displayItemNumbering = true,
+  className,
+  logoUrl = '/src/assets/logos/reactbits-gh-white.svg',
+  menuButtonColor = '#fff',
+  openMenuButtonColor = '#fff',
+  accentColor = '#5227FF',
+  changeMenuColorOnOpen = true,
+  isFixed = false,
+  onMenuOpen,
+  onMenuClose
+}) => {
+  const [open, setOpen] = useState(false);
+  const openRef = useRef(false);
+  const panelRef = useRef(null);
+  const preLayersRef = useRef(null);
+  const preLayerElsRef = useRef([]);
+  const plusHRef = useRef(null);
+  const plusVRef = useRef(null);
+  const iconRef = useRef(null);
+  const textInnerRef = useRef(null);
+  const textWrapRef = useRef(null);
+  const [textLines, setTextLines] = useState(['Menu', 'Close']);
 
-// ────────────────────────── 官网 Menu Variants (完整复制 + spring 物理) ──────────────────────────
-const menuVariants = {
-  open: {
-    x: 0,
-    scale: 1,
-    transition: {
-      type: "spring",
-      stiffness: 260,
-      damping: 20,
-      duration: 0.6,
-      ease: [0.76, 0, 0.24, 1],  // 官网 easeOutBack-like
+  const openTlRef = useRef(null);
+  const closeTweenRef = useRef(null);
+  const spinTweenRef = useRef(null);
+  const textCycleAnimRef = useRef(null);
+  const colorTweenRef = useRef(null);
+  const toggleBtnRef = useRef(null);
+  const busyRef = useRef(false);
+  const itemEntranceTweenRef = useRef(null);
+
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      const panel = panelRef.current;
+      const preContainer = preLayersRef.current;
+      const plusH = plusHRef.current;
+      const plusV = plusVRef.current;
+      const icon = iconRef.current;
+      const textInner = textInnerRef.current;
+      if (!panel || !plusH || !plusV || !icon || !textInner) return;
+
+      let preLayers = [];
+      if (preContainer) {
+        preLayers = Array.from(preContainer.querySelectorAll('.sm-prelayer'));
+      }
+      preLayerElsRef.current = preLayers;
+
+      const offscreen = position === 'left' ? -100 : 100;
+      gsap.set([panel, ...preLayers], { xPercent: offscreen });
+      gsap.set(plusH, { transformOrigin: '50% 50%', rotate: 0 });
+      gsap.set(plusV, { transformOrigin: '50% 50%', rotate: 90 });
+      gsap.set(icon, { rotate: 0, transformOrigin: '50% 50%' });
+      gsap.set(textInner, { yPercent: 0 });
+      if (toggleBtnRef.current) gsap.set(toggleBtnRef.current, { color: menuButtonColor });
+    });
+    return () => ctx.revert();
+  }, [menuButtonColor, position]);
+
+  const buildOpenTimeline = useCallback(() => {
+    const panel = panelRef.current;
+    const layers = preLayerElsRef.current;
+    if (!panel) return null;
+
+    openTlRef.current?.kill();
+    if (closeTweenRef.current) {
+      closeTweenRef.current.kill();
+      closeTweenRef.current = null;
+    }
+    itemEntranceTweenRef.current?.kill();
+
+    const itemEls = Array.from(panel.querySelectorAll('.sm-panel-itemLabel'));
+    const numberEls = Array.from(panel.querySelectorAll('.sm-panel-list[data-numbering] .sm-panel-item'));
+    const socialTitle = panel.querySelector('.sm-socials-title');
+    const socialLinks = Array.from(panel.querySelectorAll('.sm-socials-link'));
+
+    const layerStates = layers.map(el => ({ el, start: Number(gsap.getProperty(el, 'xPercent')) }));
+    const panelStart = Number(gsap.getProperty(panel, 'xPercent'));
+
+    if (itemEls.length) {
+      gsap.set(itemEls, { yPercent: 140, rotate: 10 });
+    }
+    if (numberEls.length) {
+      gsap.set(numberEls, { '--sm-num-opacity': 0 });
+    }
+    if (socialTitle) {
+      gsap.set(socialTitle, { opacity: 0 });
+    }
+    if (socialLinks.length) {
+      gsap.set(socialLinks, { y: 25, opacity: 0 });
+    }
+
+    const tl = gsap.timeline({ paused: true });
+
+    layerStates.forEach((ls, i) => {
+      tl.fromTo(ls.el, { xPercent: ls.start }, { xPercent: 0, duration: 0.5, ease: 'power4.out' }, i * 0.07);
+    });
+    const lastTime = layerStates.length ? (layerStates.length - 1) * 0.07 : 0;
+    const panelInsertTime = lastTime + (layerStates.length ? 0.08 : 0);
+    const panelDuration = 0.65;
+    tl.fromTo(
+      panel,
+      { xPercent: panelStart },
+      { xPercent: 0, duration: panelDuration, ease: 'power4.out' },
+      panelInsertTime
+    );
+
+    if (itemEls.length) {
+      const itemsStartRatio = 0.15;
+      const itemsStart = panelInsertTime + panelDuration * itemsStartRatio;
+      tl.to(
+        itemEls,
+        {
+          yPercent: 0,
+          rotate: 0,
+          duration: 1,
+          ease: 'power4.out',
+          stagger: { each: 0.1, from: 'start' }
+        },
+        itemsStart
+      );
+      if (numberEls.length) {
+        tl.to(
+          numberEls,
+          {
+            duration: 0.6,
+            ease: 'power2.out',
+            '--sm-num-opacity': 1,
+            stagger: { each: 0.08, from: 'start' }
+          },
+          itemsStart + 0.1
+        );
+      }
+    }
+
+    if (socialTitle || socialLinks.length) {
+      const socialsStart = panelInsertTime + panelDuration * 0.4;
+      if (socialTitle) {
+        tl.to(
+          socialTitle,
+          {
+            opacity: 1,
+            duration: 0.5,
+            ease: 'power2.out'
+          },
+          socialsStart
+        );
+      }
+      if (socialLinks.length) {
+        tl.to(
+          socialLinks,
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.55,
+            ease: 'power3.out',
+            stagger: { each: 0.08, from: 'start' },
+            onComplete: () => {
+              gsap.set(socialLinks, { clearProps: 'opacity' });
+            }
+          },
+          socialsStart + 0.04
+        );
+      }
+    }
+
+    openTlRef.current = tl;
+    return tl;
+  }, []);
+
+  const playOpen = useCallback(() => {
+    if (busyRef.current) return;
+    busyRef.current = true;
+    const tl = buildOpenTimeline();
+    if (tl) {
+      tl.eventCallback('onComplete', () => {
+        busyRef.current = false;
+      });
+      tl.play(0);
+    } else {
+      busyRef.current = false;
+    }
+  }, [buildOpenTimeline]);
+
+  const playClose = useCallback(() => {
+    openTlRef.current?.kill();
+    openTlRef.current = null;
+    itemEntranceTweenRef.current?.kill();
+
+    const panel = panelRef.current;
+    const layers = preLayerElsRef.current;
+    if (!panel) return;
+
+    const all = [...layers, panel];
+    closeTweenRef.current?.kill();
+    const offscreen = position === 'left' ? -100 : 100;
+    closeTweenRef.current = gsap.to(all, {
+      xPercent: offscreen,
+      duration: 0.32,
+      ease: 'power3.in',
+      overwrite: 'auto',
+      onComplete: () => {
+        const itemEls = Array.from(panel.querySelectorAll('.sm-panel-itemLabel'));
+        if (itemEls.length) {
+          gsap.set(itemEls, { yPercent: 140, rotate: 10 });
+        }
+        const numberEls = Array.from(panel.querySelectorAll('.sm-panel-list[data-numbering] .sm-panel-item'));
+        if (numberEls.length) {
+          gsap.set(numberEls, { '--sm-num-opacity': 0 });
+        }
+        const socialTitle = panel.querySelector('.sm-socials-title');
+        const socialLinks = Array.from(panel.querySelectorAll('.sm-socials-link'));
+        if (socialTitle) gsap.set(socialTitle, { opacity: 0 });
+        if (socialLinks.length) gsap.set(socialLinks, { y: 25, opacity: 0 });
+        busyRef.current = false;
+      }
+    });
+  }, [position]);
+
+  const animateIcon = useCallback(opening => {
+    const icon = iconRef.current;
+    if (!icon) return;
+    spinTweenRef.current?.kill();
+    if (opening) {
+      spinTweenRef.current = gsap.to(icon, { rotate: 225, duration: 0.8, ease: 'power4.out', overwrite: 'auto' });
+    } else {
+      spinTweenRef.current = gsap.to(icon, { rotate: 0, duration: 0.35, ease: 'power3.inOut', overwrite: 'auto' });
+    }
+  }, []);
+
+  const animateColor = useCallback(
+    opening => {
+      const btn = toggleBtnRef.current;
+      if (!btn) return;
+      colorTweenRef.current?.kill();
+      if (changeMenuColorOnOpen) {
+        const targetColor = opening ? openMenuButtonColor : menuButtonColor;
+        colorTweenRef.current = gsap.to(btn, {
+          color: targetColor,
+          delay: 0.18,
+          duration: 0.3,
+          ease: 'power2.out'
+        });
+      } else {
+        gsap.set(btn, { color: menuButtonColor });
+      }
     },
-  },
-  closed: {
-    x: "-100%",  // 左侧滑出 (官网左侧弹出)
-    scale: 0.95,
-    transition: {
-      type: "spring",
-      stiffness: 260,
-      damping: 20,
-      duration: 0.6,
-      ease: [0.32, 0, 0.67, 0],  // 官网 easeInBack
-    },
-  },
-};
-// ─────────────────────────────────────────────────────────────────────────────
+    [openMenuButtonColor, menuButtonColor, changeMenuColorOnOpen]
+  );
 
-// ────────────────────────── 官网 Link Variants (stagger + scale/bounce 修复) ──────────────────────────
-const linkVariants = {
-  open: (i) => ({
-    opacity: 1,
-    x: 0,
-    scale: 1.05,  // 缺失修复：官方轻微放大
-    transition: {
-      delay: i * 0.15,  // 官网 stagger 0.15s (慢一点丝滑)
-      duration: 0.45,
-      ease: [0.215, 0.61, 0.355, 1],  // 官网 easeOutCubic
-      type: "spring",
-      stiffness: 400,
-      damping: 25,  // bounce 效果
-    },
-  }),
-  closed: (i) => ({
-    opacity: 0,
-    x: -30,
-    scale: 0.95,
-    transition: {
-      delay: (2 - i) * 0.08,  // 反向 stagger (更快关闭)
-      duration: 0.25,
-      ease: [0.22, 1, 0.36, 1],
-      type: "tween",
-    },
-  }),
-};
-// ─────────────────────────────────────────────────────────────────────────────
+  React.useEffect(() => {
+    if (toggleBtnRef.current) {
+      if (changeMenuColorOnOpen) {
+        const targetColor = openRef.current ? openMenuButtonColor : menuButtonColor;
+        gsap.set(toggleBtnRef.current, { color: targetColor });
+      } else {
+        gsap.set(toggleBtnRef.current, { color: menuButtonColor });
+      }
+    }
+  }, [changeMenuColorOnOpen, menuButtonColor, openMenuButtonColor]);
 
-// ────────────────────────── 官网 Overlay Variants (彩色覆盖 + blur 修复) ──────────────────────────
-const overlayVariants = {
-  open: {
-    opacity: 1,
-    scale: 1,
-    transition: {
-      duration: 0.25,
-      ease: "easeOut",
-    },
-  },
-  closed: {
-    opacity: 0,
-    scale: 0.95,
-    transition: {
-      duration: 0.25,
-      ease: "easeIn",
-    },
-  },
-};
-// ─────────────────────────────────────────────────────────────────────────────
+  const animateText = useCallback(opening => {
+    const inner = textInnerRef.current;
+    if (!inner) return;
+    textCycleAnimRef.current?.kill();
 
-// ────────────────────────── 官网 Button Variants (文字 + 图标 + hover 修复) ──────────────────────────
-const buttonVariants = {
-  hover: {
-    scale: 1.1,
-    boxShadow: "0 10px 25px rgba(0,0,0,0.1)",  // 官网 hover 阴影
-  },
-  tap: { scale: 0.98 },
-};
+    const currentLabel = opening ? 'Menu' : 'Close';
+    const targetLabel = opening ? 'Close' : 'Menu';
+    const cycles = 3;
+    const seq = [currentLabel];
+    let last = currentLabel;
+    for (let i = 0; i < cycles; i++) {
+      last = last === 'Menu' ? 'Close' : 'Menu';
+      seq.push(last);
+    }
+    if (last !== targetLabel) seq.push(targetLabel);
+    seq.push(targetLabel);
+    setTextLines(seq);
 
-const iconLineVariants = {
-  closed: { rotate: 0, y: 0 },
-  open: { rotate: 45, y: 4 },  // 上线
-  middleOpen: { opacity: 0 },
-  bottomOpen: { rotate: -45, y: -4 },
-};
-// ─────────────────────────────────────────────────────────────────────────────
+    gsap.set(inner, { yPercent: 0 });
+    const lineCount = seq.length;
+    const finalShift = ((lineCount - 1) / lineCount) * 100;
+    textCycleAnimRef.current = gsap.to(inner, {
+      yPercent: -finalShift,
+      duration: 0.5 + lineCount * 0.07,
+      ease: 'power4.out'
+    });
+  }, []);
 
-export default function StaggeredMenu() {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const links = [
-    { href: "/", label: "Index" },
-    { href: "/about/", label: "About" },
-    { href: "/blog/", label: "Blog" },
-  ];
+  const toggleMenu = useCallback(() => {
+    const target = !openRef.current;
+    openRef.current = target;
+    setOpen(target);
+    if (target) {
+      onMenuOpen?.();
+      playOpen();
+    } else {
+      onMenuClose?.();
+      playClose();
+    }
+    animateIcon(target);
+    animateColor(target);
+    animateText(target);
+  }, [playOpen, playClose, animateIcon, animateColor, animateText, onMenuOpen, onMenuClose]);
 
   return (
-    <>
-      {/* ─────── 官网按钮：左侧 + "Menu" 文字 + 图标 (缺失修复) ─────── */}
-      <motion.button
-        variants={buttonVariants}
-        whileHover="hover"
-        whileTap="tap"
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed left-6 top-6 z-[60] flex flex-row items-center gap-3 px-4 py-2 rounded-lg bg-white border border-gray-200 shadow-md transition-all duration-300 focus:outline-none"
-        aria-label="Toggle Menu"
-        style={{
-          // 官网 Tailwind 转换：白底按钮，灰边，圆角
-          position: "uid-fixed",
-          left: "1.5rem",
-          top: "1.5rem",
-          zIndex: 60,
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          gap: "0.75rem",
-          padding: "0.5rem 1rem",
-          borderRadius: "0.5rem",
-          backgroundColor: "#FFFFFF",  // 官网白底
-          border: "1px solid #E5E7EB",  // border-gray-200
-          boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
-          transition: "all 0.3s ease",
-        }}
-      >
-        {/* 图标：三条线 (官网风格) */}
-        <motion.span
-          className="flex flex-col gap-1"
-          style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}
+    <div
+      className={(className ? className + ' ' : '') + 'staggered-menu-wrapper' + (isFixed ? ' fixed-wrapper' : '')}
+      style={accentColor ? { ['--sm-accent']: accentColor } : undefined}
+      data-position={position}
+      data-open={open || undefined}
+    >
+      <div ref={preLayersRef} className="sm-prelayers" aria-hidden="true">
+        {(() => {
+          const raw = colors && colors.length ? colors.slice(0, 4) : ['#1e1e22', '#35353c'];
+          let arr = [...raw];
+          if (arr.length >= 3) {
+            const mid = Math.floor(arr.length / 2);
+            arr.splice(mid, 1);
+          }
+          return arr.map((c, i) => <div key={i} className="sm-prelayer" style={{ background: c }} />);
+        })()}
+      </div>
+      <header className="staggered-menu-header" aria-label="Main navigation header">
+        <div className="sm-logo" aria-label="Logo">
+          <img
+            src={logoUrl || '/src/assets/logos/reactbits-gh-white.svg'}
+            alt="Logo"
+            className="sm-logo-img"
+            draggable={false}
+            width={110}
+            height={24}
+          />
+        </div>
+        <button
+          ref={toggleBtnRef}
+          className="sm-toggle"
+          aria-label={open ? 'Close menu' : 'Open menu'}
+          aria-expanded={open}
+          aria-controls="staggered-menu-panel"
+          onClick={toggleMenu}
+          type="button"
         >
-          <motion.span
-            className="block w-5 h-0.5 bg-gray-600"
-            animate={isOpen ? iconLineVariants.open : iconLineVariants.closed}
-            transition={{ duration: 0.2 }}
-            style={{
-              width: "1.25rem",
-              height: "2px",
-              backgroundColor: "#4B5563",  // gray-600
-              borderRadius: "1px",
-            }}
-          />
-          <motion.span
-            className="block w-5 h-0.5 bg-gray-600"
-            animate={isOpen ? iconLineVariants.middleOpen : { opacity: 1 }}
-            transition={{ duration: 0.2 }}
-            style={{
-              width: "1.25rem",
-              height: "2px",
-              backgroundColor: "#4B5563",
-              borderRadius: "1px",
-              opacity: isOpen ? 0 : 1,
-            }}
-          />
-          <motion.span
-            className="block w-5 h-0.5 bg-gray-600"
-            animate={isOpen ? iconLineVariants.bottomOpen : iconLineVariants.closed}
-            transition={{ duration: 0.2 }}
-            style={{
-              width: "1.25rem",
-              height: "2px",
-              backgroundColor: "#4B5563",
-              borderRadius: "1px",
-            }}
-          />
-        </motion.span>
-        {/* 文字 "Menu" (官网缺失修复) */}
-        <span
-          className="text-sm font-medium text-gray-700 uppercase tracking-wider"
-          style={{
-            fontSize: "0.875rem",
-            fontWeight: 500,
-            color: "#374151",  // gray-700
-            textTransform: "uppercase",
-            letterSpacing: "0.05em",
-            fontFamily: "'Inter', sans-serif",
-          }}
-        >
-          Menu
-        </span>
-      </motion.button>
-      {/* ───────────────────────────────────────────────────────────────────────────── */}
-
-      {/* ─────── 官网 Overlay：彩色覆盖 + blur (缺失修复) ─────── */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            variants={overlayVariants}
-            initial="closed"
-            animate="open"
-            exit="closed"
-            className="fixed inset-0 z-40"
-            onClick={() => setIsOpen(false)}
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              zIndex: 40,
-              background: "linear-gradient(135deg, rgba(13, 9, 80, 0.8), rgba(26, 11, 62, 0.8))",  // 官网紫灰渐变覆盖
-              backdropFilter: "blur(4px)",  // 模糊覆盖下层
-              opacity: 0,
-            }}
-          />
-        )}
-      </AnimatePresence>
-      {/* ───────────────────────────────────────────────────────────────────────────── */}
-
-      {/* ─────── 官网菜单：左侧滑出 + 白底 + stagger 文字 (完整动画修复) ─────── */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.nav
-            variants={menuVariants}
-            initial="closed"
-            animate="open"
-            exit="closed"
-            className="fixed left-0 top-0 z-50 h-full w-80 p-8 pt-24 shadow-2xl overflow-y-auto"
-            style={{
-              position: "fixed",
-              left: 0,
-              top: 0,
-              height: "100vh",
-              width: "20rem",  // w-80
-              padding: "2rem",
-              paddingTop: "6rem",
-              backgroundColor: "#FFFFFF",  // 官网白底 (缺失修复)
-              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-              overflowY: "auto",
-              zIndex: 50,  // 覆盖下层 (你的内容被遮)
-              borderRight: "1px solid #E5E7EB",  // 右边灰线
-            }}
-          >
-            <ul className="space-y-6 list-none m-0 p-0" style={{ margin: 0, padding: 0, listStyle: "none" }}>
-              {links.map((link, i) => (
-                <motion.li
-                  key={link.href}
-                  custom={i}
-                  variants={linkVariants}
-                  initial="closed"
-                  animate="open"
-                  exit="closed"
-                  className="overflow-hidden"
-                  style={{ overflow: "hidden" }}
-                >
-                  <a
-                    href={link.href}
-                    onClick={() => setIsOpen(false)}
-                    className="block text-3xl font-bold uppercase tracking-wide transition-all duration-300 no-underline cursor-pointer"
-                    style={{
-                      display: "block",
-                      fontSize: "1.875rem",  // text-3xl (官网尺寸)
-                      fontWeight: "bold",
-                      fontFamily: "'Inter', sans-serif",  // 官网 Inter
-                      textTransform: "uppercase",
-                      letterSpacing: "0.025em",  // tracking-wide
-                      color: "#1F2937",  // 黑字 (官网白底黑字)
-                      textDecoration: "none",
-                      padding: "0.75rem 0",
-                      transition: "all 0.3s ease",
-                      // Hover：官网 indigo 蓝紫 + 右移 + scale
-                      ":hover": {
-                        color: "#6366F1",  // #6366F1 indigo-600
-                        transform: "translateX(0.5rem) scale(1.02)",
-                      },
-                    }}
-                  >
-                    {link.label}
-                  </a>
-                </motion.li>
+          <span ref={textWrapRef} className="sm-toggle-textWrap" aria-hidden="true">
+            <span ref={textInnerRef} className="sm-toggle-textInner">
+              {textLines.map((l, i) => (
+                <span className="sm-toggle-line" key={i}>
+                  {l}
+                </span>
               ))}
-            </ul>
-          </motion.nav>
-        )}
-      </AnimatePresence>
-      {/* ───────────────────────────────────────────────────────────────────────────── */}
-    </>
+            </span>
+          </span>
+          <span ref={iconRef} className="sm-icon" aria-hidden="true">
+            <span ref={plusHRef} className="sm-icon-line" />
+            <span ref={plusVRef} className="sm-icon-line sm-icon-line-v" />
+          </span>
+        </button>
+      </header>
+
+      <aside id="staggered-menu-panel" ref={panelRef} className="staggered-menu-panel" aria-hidden={!open}>
+        <div className="sm-panel-inner">
+          <ul className="sm-panel-list" role="list" data-numbering={displayItemNumbering || undefined}>
+            {items && items.length ? (
+              items.map((it, idx) => (
+                <li className="sm-panel-itemWrap" key={it.label + idx}>
+                  <a className="sm-panel-item" href={it.link} aria-label={it.ariaLabel} data-index={idx + 1}>
+                    <span className="sm-panel-itemLabel">{it.label}</span>
+                  </a>
+                </li>
+              ))
+            ) : (
+              <li className="sm-panel-itemWrap" aria-hidden="true">
+                <span className="sm-panel-item">
+                  <span className="sm-panel-itemLabel">No items</span>
+                </span>
+              </li>
+            )}
+          </ul>
+          {displaySocials && socialItems && socialItems.length > 0 && (
+            <div className="sm-socials" aria-label="Social links">
+              <h3 className="sm-socials-title">Socials</h3>
+              <ul className="sm-socials-list" role="list">
+                {socialItems.map((s, i) => (
+                  <li key={s.label + i} className="sm-socials-item">
+                    <a href={s.link} target="_blank" rel="noopener noreferrer" className="sm-socials-link">
+                      {s.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      </aside>
+    </div>
   );
-}
+};
+
+export default StaggeredMenu;

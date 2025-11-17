@@ -1,0 +1,54 @@
+---
+// StaggeredMenu.astro
+// 纯“桥梁”：把 Astro 参数喂给 React 组件
+import StaggeredMenuReact from './StaggeredMenu.jsx';
+
+export interface Props {
+  position?: 'left' | 'right';
+  colors?: string[];
+  items?: { label: string; link: string; ariaLabel?: string }[];
+  socialItems?: { label: string; link: string }[];
+  displaySocials?: boolean;
+  displayItemNumbering?: boolean;
+  logoUrl?: string;
+  accentColor?: string;
+  changeMenuColorOnOpen?: boolean;
+  isFixed?: boolean;
+}
+
+const {
+  position = 'right',
+  colors = ['#B19EEF', '#5227FF'],
+  items = [], // 必传
+  socialItems = [],
+  displaySocials = true,
+  displayItemNumbering = true,
+  logoUrl = '/src/assets/logos/reactbits-gh-white.svg',
+  accentColor = '#5227FF',
+  changeMenuColorOnOpen = true,
+  isFixed = true
+} = Astro.props;
+---
+
+<StaggeredMenuReact
+  client:load
+  position={position}
+  colors={colors}
+  items={items}
+  socialItems={socialItems}
+  displaySocials={displaySocials}
+  displayItemNumbering={displayItemNumbering}
+  logoUrl={logoUrl}
+  accentColor={accentColor}
+  changeMenuColorOnOpen={changeMenuColorOnOpen}
+  isFixed={isFixed}
+/>
+
+<style>
+  /* 让按钮在移动端靠右 */
+  @media (max-width: 640px) {
+    .staggered-menu-header .sm-toggle {
+      margin-left: auto;
+    }
+  }
+</style>
