@@ -1,28 +1,67 @@
 ---
 import '../styles/global.css';
-import Navigation from '../components/Navigation.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-const pageTitle = "BLOG";
+
+const pageTitle = 'BLOG';
 ---
 
-<html lang="zh-cn">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type ="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content = {Astro.generator} >
-    <title>Astro</title>
-  </head>
-  <body>
-    <Navigation />
-
-      <h1>钛柯的站点，</h1>
+<BaseLayout title={pageTitle}>
+  <main class="page-wrap">
+    <section class="content-card">
+      <h1>钛柯的站点</h1>
       <h2>装修中...</h2>
 
-      <p>这是禁忌之术</p>
-      <ul>
-      <li><a href="/posts/post-1/">禁忌之术1</a></li>
+      <p>这是禁忌之术。</p>
+
+      <ul class="post-list">
+        <li>
+          <a href="/posts/post-1/">禁忌之术1</a>
+        </li>
       </ul>
-   </BaseLayout>
-  </body>
-</html>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .page-wrap {
+    min-height: 100vh;
+    display: grid;
+    align-content: center;
+    padding: 5rem 1rem 2rem;
+  }
+
+  .content-card {
+    max-width: 820px;
+    margin: 0 auto;
+    color: #fff;
+  }
+
+  h1 {
+    margin: 0 0 0.6rem;
+    font-size: clamp(2rem, 6vw, 3.2rem);
+    color: #fff;
+  }
+
+  h2,
+  p {
+    color: #f0f0f0;
+  }
+
+  .post-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 1.25rem;
+  }
+
+  .post-list a {
+    color: #fff;
+    text-decoration: none;
+    border-bottom: 1px solid #ffffff66;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .post-list a:hover {
+    color: #cfcfff;
+    border-color: #cfcfff;
+  }
+</style>

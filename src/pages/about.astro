@@ -1,76 +1,103 @@
 ---
 import '../styles/global.css';
-import Navigation from '../components/Navigation.astro';
-import Footer from '../components/Footer.astro';  
+import Footer from '../components/Footer.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const pageTitle = "关于我";
+const pageTitle = '关于我';
 
 const identity = {
-  firstName: "tAIeK",
-  country: "CN",
-  occupation: "技术撰稿人",
-  hobbies: ["鸟鸟", "摄摄", ],
+  firstName: 'tAIeK',
+  country: 'CN',
+  occupation: '技术撰稿人',
+  hobbies: ['鸟鸟', '摄摄']
 };
 const happy = true;
 
-
-const skills = ["HTML", "CSS", "JavaScript", "React", "Astro", "Writing Docs"];
-
-const skillColor = "crimson";
-const fontWeight = "bold";
-const textCase = "uppercase";
+const skills = ['HTML', 'CSS', 'JavaScript', 'React', 'Astro', 'Writing Docs'];
 ---
 
-<html lang="zh-cn">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type ="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content = {Astro.generator} >
-    <title>{pageTitle}</title>
-     <style>
-      h1 {
-        color: purple;
-        font-size: 4rem;
-      }
-       .skill {
-            color: var(--skillColor);
-            font-weight: var(--fontWeight);
-            text-transform: var(--textCase);    
-              }
-    </style>
-  </head>
-  
-  <body>
-    <Navigation />
-      
+<BaseLayout title={pageTitle}>
+  <main class="page-wrap">
+    <section class="content-card">
       <h1>{pageTitle}</h1>
-  <h2>……和我的新 Astro 网站！</h2>
+      <h2>……和我的新 Astro 网站！</h2>
 
-  <p>我正在学习 Astro 的入门教程。这是我网站上的第二个页面，也是我自己建立的第一页面！</p>
+      <p>我正在学习 Astro 的入门教程。这是我网站上的第二个页面，也是我自己建立的第一页面！</p>
+      <p>随着我完成更多，该站点将更新，所以请继续查看我的旅程将如何进行吧！</p>
 
-  <p>随着我完成更多，该站点将更新，所以请继续查看我的旅程将如何进行吧！</p>
-  <p>以下关于我：</p>
-  <ul>
-  <li>名字: {identity.firstName}</li>
-  <li>职业: {identity.occupation}</li>
-  <li>爱好:
-  <ul>
+      <h3>以下关于我：</h3>
+      <ul>
+        <li>名字: {identity.firstName}</li>
+        <li>国家: {identity.country}</li>
+        <li>职业: {identity.occupation}</li>
+        <li>
+          爱好:
+          <ul>
+            {identity.hobbies.map((hobby) => (
+              <li>{hobby}</li>
+            ))}
+          </ul>
+        </li>
+      </ul>
 
-      {identity.hobbies.map((hobby) => (
-        <li>{hobby}</li>
-      ))}
-  </ul>
+      {happy && <p>我非常乐意学习 Astro！</p>}
 
-  </li> 
-  {happy && <p>我非常乐意学习 Astro！</p>}
+      <h3>我的技能：</h3>
+      <ul class="skills-list">
+        {skills.map((skill) => <li class="skill">{skill}</li>)}
+      </ul>
+    </section>
 
-<p>我的技能是：</p>
-<ul>
-   {skills.map((skill) => <li class="skill">{skill}</li>)}
-</ul>
+    <Footer />
+  </main>
 </BaseLayout>
- <Footer />
-  </body>
-</html>
+
+<style>
+  .page-wrap {
+    min-height: 100vh;
+    display: grid;
+    align-content: center;
+    gap: 1.5rem;
+    padding: 5rem 1rem 2rem;
+  }
+
+  .content-card {
+    max-width: 820px;
+    margin: 0 auto;
+    color: #fff;
+  }
+
+  h1 {
+    margin: 0 0 0.6rem;
+    font-size: clamp(2rem, 6vw, 3.2rem);
+    color: #fff;
+  }
+
+  h2,
+  h3 {
+    color: #fff;
+  }
+
+  p,
+  li {
+    color: #f0f0f0;
+    line-height: 1.7;
+  }
+
+  .skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .skill {
+    color: #ff4d7d;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: 1px solid #ffffff33;
+    border-radius: 999px;
+    padding: 0.25rem 0.65rem;
+  }
+</style>
