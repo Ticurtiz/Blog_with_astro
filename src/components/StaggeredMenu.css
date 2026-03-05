@@ -13,6 +13,13 @@
   height: 100vh;
   z-index: 40;
   overflow: hidden;
+  pointer-events: none;
+}
+
+
+.staggered-menu-wrapper.fixed-wrapper .staggered-menu-header,
+.staggered-menu-wrapper.fixed-wrapper .staggered-menu-panel {
+  pointer-events: all;
 }
 
 .staggered-menu-header {
