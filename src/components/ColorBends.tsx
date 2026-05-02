@@ -106,7 +106,9 @@ export default function ColorBends({
   warpStrength = 1,
   mouseInfluence = 1,
   parallax = 0.5,
-  noise = 0.01
+  noise = 0.01,
+  maxPixelRatio = 1.5,
+  maxFps = 30
 }) {
   const containerRef = useRef(null);
   const rendererRef = useRef(null);
@@ -121,6 +123,10 @@ export default function ColorBends({
 
   useEffect(() => {
     const container = containerRef.current;
+    if (!container) return;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return;
+
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
     const geometry = new THREE.PlaneGeometry(2, 2);
@@ -158,7 +164,7 @@ export default function ColorBends({
     });
     rendererRef.current = renderer;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, maxPixelRatio));
     renderer.setClearColor(0x000000, transparent ? 0 : 1);
     renderer.domElement.style.width = '100%';
     renderer.domElement.style.height = '100%';
@@ -166,6 +172,8 @@ export default function ColorBends({
     container.appendChild(renderer.domElement);
 
     const clock = new THREE.Clock();
+    let lastRender = 0;
+    let running = true;
 
     const handleResize = () => {
       const w = container.clientWidth || 1;
@@ -184,6 +192,14 @@ export default function ColorBends({
     }
 
     const loop = () => {
+      if (!running) return;
+      const now = performance.now();
+      const minFrameTime = 1000 / maxFps;
+      if (now - lastRender < minFrameTime) {
+        rafRef.current = requestAnimationFrame(loop);
+        return;
+      }
+      lastRender = now;
       const dt = clock.getDelta();
       const elapsed = clock.elapsedTime;
       material.uniforms.uTime.value = elapsed;
@@ -202,8 +218,23 @@ export default function ColorBends({
     };
     rafRef.current = requestAnimationFrame(loop);
 
+    const handleVisibilityChange = () => {
+      running = document.visibilityState === 'visible';
+      if (running && rafRef.current === null) {
+        clock.start();
+        rafRef.current = requestAnimationFrame(loop);
+      } else if (!running && rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+        clock.stop();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     return () => {
+      running = false;
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       if (resizeObserverRef.current) resizeObserverRef.current.disconnect();
       else window.removeEventListener('resize', handleResize);
       geometry.dispose();
@@ -213,7 +244,7 @@ export default function ColorBends({
         container.removeChild(renderer.domElement);
       }
     };
-  }, [frequency, mouseInfluence, noise, parallax, scale, speed, transparent, warpStrength]);
+  }, [frequency, maxFps, maxPixelRatio, mouseInfluence, noise, parallax, scale, speed, transparent, warpStrength]);
 
   useEffect(() => {
     const material = materialRef.current;
@@ -269,11 +300,13 @@ export default function ColorBends({
       const y = -(((e.clientY - rect.top) / (rect.height || 1)) * 2 - 1);
       pointerTargetRef.current.set(x, y);
     };
-    container.addEventListener('pointermove', handlePointerMove);
+    if (mouseInfluence > 0 || parallax > 0) {
+      container.addEventListener('pointermove', handlePointerMove, { passive: true });
+    }
     return () => {
       container.removeEventListener('pointermove', handlePointerMove);
     };
-  }, []);
+  }, [mouseInfluence, parallax]);
 
   return <div ref={containerRef} className={`color-bends-container ${className}`} style={style} />;
 }

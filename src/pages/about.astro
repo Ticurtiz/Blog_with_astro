@@ -228,4 +228,41 @@ const learningExperiences = [
       padding: 1.35rem;
     }
   }
+
+  html[data-device='mobile'][data-orientation='portrait'] .about-page {
+    min-height: 100dvh;
+    padding: max(4.75rem, calc(env(safe-area-inset-top) + 4.25rem)) 0.25rem
+      max(1.5rem, env(safe-area-inset-bottom));
+    gap: 1rem;
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] .resume-shell {
+    border-radius: 8px;
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] .sidebar {
+    padding: 1.25rem;
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] .avatar {
+    width: 82px;
+    height: 82px;
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] .content {
+    padding: 1.1rem;
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] h1 {
+    font-size: 1.75rem;
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] h2 {
+    font-size: 1.45rem;
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] .chip-list li {
+    border-radius: 8px;
+    font-size: 0.88rem;
+  }
 </style>
