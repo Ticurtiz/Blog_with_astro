@@ -1,68 +1,39 @@
 ---
+const platform = "github";
+const username = "钛柯";
 import Social from './Social.astro';
-
-const platform = 'github';
 ---
-
-<footer>
-  <div class="footer-inner">
-    <p>
-      © 2025 TAIKE |
-      On <a href="https://github.com/Ticurtiz" class="footer-link">{platform}</a>, learn more about my projects
-    </p>
-    <Social platform="Only_for_91vip" username="NULL!" />
-  </div>
-</footer>
-
-<style>
-  footer {
-    padding: 0 1rem max(0.85rem, env(safe-area-inset-bottom)) 1rem;
-    pointer-events: none;
-  }
-
-  .footer-inner {
-    z-index: 50;
-    max-width: min(100%, 42rem);
+ <style>
+  .z-50 {
+  z-index: 50 ;
+}
+  .linkcolor {
     color: #0090fe;
   }
-
-  .footer-link {
-    color: #c7ffd5 !important;
-    text-decoration: none !important;
-    position: relative;
-    transition: all 0.3s ease;
-    font-weight: 500;
-    pointer-events: all;
-  }
-
-  .footer-link:hover {
-    color: #c1ffd0 !important;
-    text-shadow: 0 0 2px rgb(182, 248, 245);
-    transform: translateY(-1px);
-  }
-
-  p {
-    color: rgb(255, 255, 255);
-    font-family: 'JetBrains Mono', monospace;
-    margin: 0 0 0.25rem;
-    line-height: 1.45;
-  }
-
-  @media (min-width: 720px) {
-    footer {
-      padding-right: max(1.25rem, env(safe-area-inset-right));
-      padding-left: max(1.25rem, env(safe-area-inset-left));
-    }
-  }
-
-  @media (max-width: 640px) {
-    footer {
-      padding-right: max(0.85rem, env(safe-area-inset-right));
-      padding-left: max(0.85rem, env(safe-area-inset-left));
-    }
-
-    .footer-inner {
-      font-size: 0.92rem;
-    }
+.footer-link {
+  color: #c7ffd5 !important;           /* 默认绿色 */
+  text-decoration: none !important;
+  position: relative;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  pointer-events: all;
+}
+.footer-link:hover {
+  color: #c1ffd0 !important;           /* 悬停变亮绿 */
+  text-shadow: 0 0 2px rgb(182, 248, 245);          /* 发光 */
+  transform: translateY(-1px);
+}
+p{
+        color: rgb(255, 255, 255);
+        font-family: 'JetBrains Mono', monospace;
+        margin: 5;
   }
 </style>
+<footer>
+  <div class="z-50 linkcolor">
+  <p>
+    © 2025 TAIKE |
+    On <a href={`https://github.com/Ticurtiz`} class="footer-link">{platform}</a>, learn more about my projects</p>
+    <Social platform="Only_for_91vip"  username="NULL!" />
+   </div>
+</footer>
