@@ -1,76 +1,268 @@
 ---
 import '../styles/global.css';
-import Navigation from '../components/Navigation.astro';
-import Footer from '../components/Footer.astro';  
+import Footer from '../components/Footer.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const pageTitle = "关于我";
+const pageTitle = 'ABOUT';
 
-const identity = {
-  firstName: "tAIeK",
-  country: "CN",
-  occupation: "技术撰稿人",
-  hobbies: ["鸟鸟", "摄摄", ],
+const profile = {
+  name: 'tAIeK',
+  role: 'Web 开发 / 技术写作',
+  location: 'CN',
+  email: 'hello@taike.dev',
+  website: 'taike.dev'
 };
-const happy = true;
 
+const skills = {
+  frontend: ['Astro', 'React', 'TypeScript', 'CSS'],
+  writing: ['技术文档', '教程写作', '产品说明'],
+  tools: ['Git', 'GitHub', 'VS Code', 'Figma']
+};
 
-const skills = ["HTML", "CSS", "JavaScript", "React", "Astro", "Writing Docs"];
-
-const skillColor = "crimson";
-const fontWeight = "bold";
-const textCase = "uppercase";
+const learningExperiences = [
+  {
+    period: '2024 - 至今',
+    title: '前端工程化与性能优化',
+    description: '持续练习 Astro / React 项目实践，关注可维护性、可访问性与性能指标。'
+  },
+  {
+    period: '2023 - 2024',
+    title: '交互动画与视觉表达',
+    description: '围绕 GSAP、Three.js 等能力进行实验，探索更流畅但不过度的页面动效。'
+  }
+];
 ---
 
-<html lang="zh-cn">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type ="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content = {Astro.generator} >
-    <title>{pageTitle}</title>
-     <style>
-      h1 {
-        color: purple;
-        font-size: 4rem;
-      }
-       .skill {
-            color: var(--skillColor);
-            font-weight: var(--fontWeight);
-            text-transform: var(--textCase);    
-              }
-    </style>
-  </head>
-  
-  <body>
-    <Navigation />
-      
-      <h1>{pageTitle}</h1>
-  <h2>……和我的新 Astro 网站！</h2>
+<BaseLayout title={pageTitle}>
+  <main class="about-page">
+    <section class="resume-shell">
+      <aside class="sidebar">
+        <div class="avatar" aria-hidden="true">T</div>
+        <h1>{profile.name}</h1>
+        <p class="role">{profile.role}</p>
 
-  <p>我正在学习 Astro 的入门教程。这是我网站上的第二个页面，也是我自己建立的第一页面！</p>
+        <ul class="meta-list">
+          <li>📍 {profile.location}</li>
+          <li>✉️ {profile.email}</li>
+          <li>🔗 {profile.website}</li>
+        </ul>
+      </aside>
 
-  <p>随着我完成更多，该站点将更新，所以请继续查看我的旅程将如何进行吧！</p>
-  <p>以下关于我：</p>
-  <ul>
-  <li>名字: {identity.firstName}</li>
-  <li>职业: {identity.occupation}</li>
-  <li>爱好:
-  <ul>
+      <section class="content">
+        <section class="block">
+          <h2>专业技能</h2>
 
-      {identity.hobbies.map((hobby) => (
-        <li>{hobby}</li>
-      ))}
-  </ul>
+          <h3>前端</h3>
+          <ul class="chip-list">
+            {skills.frontend.map((item) => <li>{item}</li>)}
+          </ul>
 
-  </li> 
-  {happy && <p>我非常乐意学习 Astro！</p>}
+          <h3>写作</h3>
+          <ul class="chip-list">
+            {skills.writing.map((item) => <li>{item}</li>)}
+          </ul>
 
-<p>我的技能是：</p>
-<ul>
-   {skills.map((skill) => <li class="skill">{skill}</li>)}
-</ul>
+          <h3>工具</h3>
+          <ul class="chip-list">
+            {skills.tools.map((item) => <li>{item}</li>)}
+          </ul>
+        </section>
+
+        <section class="block">
+          <h2>学习经历</h2>
+          {learningExperiences.map((item) => (
+            <article class="timeline-item">
+              <p class="period">{item.period}</p>
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+            </article>
+          ))}
+        </section>
+
+        <section class="block">
+          <h2>项目经历</h2>
+          <p>想看完整项目与作品，请前往 Projects 页面查看。</p>
+          <a class="project-link" href="/projects/">进入 PROJECTS →</a>
+        </section>
+      </section>
+    </section>
+
+    <Footer />
+  </main>
 </BaseLayout>
- <Footer />
-  </body>
-</html>
+
+<style>
+  .about-page {
+    min-height: 100vh;
+    padding: 5.5rem 1rem 2rem;
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .resume-shell {
+    max-width: 1050px;
+    margin: 0 auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    background: #f6f7fb;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #dfe3ee;
+  }
+
+  .sidebar {
+    background: #e9edf6;
+    padding: 2rem 1.4rem;
+    color: #121212;
+  }
+
+  .avatar {
+    width: 108px;
+    height: 108px;
+    border-radius: 12px;
+    background: linear-gradient(160deg, #7ea7ff, #8fd1ff);
+    display: grid;
+    place-items: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 1rem;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 2rem;
+    color: #161616;
+  }
+
+  .role {
+    margin-top: 0.45rem;
+    color: #303646;
+  }
+
+  .meta-list {
+    margin: 1.25rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.55rem;
+    color: #222b3d;
+  }
+
+  .content {
+    padding: 2rem;
+    color: #111;
+  }
+
+  .block + .block {
+    margin-top: 2rem;
+  }
+
+  h2 {
+    font-size: 1.9rem;
+    margin: 0 0 1rem;
+    color: #111;
+  }
+
+  h3 {
+    margin: 1rem 0 0.65rem;
+    color: #242b3b;
+  }
+
+  .chip-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .chip-list li {
+    background: #dde5f3;
+    color: #253047;
+    border-radius: 10px;
+    padding: 0.24rem 0.68rem;
+    font-size: 0.95rem;
+  }
+
+  .timeline-item {
+    padding: 0.9rem 0;
+    border-top: 1px solid #d9deea;
+  }
+
+  .timeline-item:first-of-type {
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .period {
+    margin: 0;
+    color: #677089;
+    font-size: 0.92rem;
+  }
+
+  .timeline-item p {
+    color: #2c3342;
+    line-height: 1.65;
+    margin: 0.35rem 0 0;
+  }
+
+  .project-link {
+    color: #2e5cff;
+    text-decoration: none;
+    font-weight: 700;
+  }
+
+  .project-link:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 840px) {
+    .resume-shell {
+      grid-template-columns: 1fr;
+    }
+
+    .content {
+      padding: 1.35rem;
+    }
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] .about-page {
+    min-height: 100dvh;
+    padding: max(4.75rem, calc(env(safe-area-inset-top) + 4.25rem)) 0.25rem
+      max(1.5rem, env(safe-area-inset-bottom));
+    gap: 1rem;
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] .resume-shell {
+    border-radius: 8px;
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] .sidebar {
+    padding: 1.25rem;
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] .avatar {
+    width: 82px;
+    height: 82px;
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] .content {
+    padding: 1.1rem;
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] h1 {
+    font-size: 1.75rem;
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] h2 {
+    font-size: 1.45rem;
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] .chip-list li {
+    border-radius: 8px;
+    font-size: 0.88rem;
+  }
+</style>

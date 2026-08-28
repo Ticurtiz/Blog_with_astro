@@ -10,10 +10,8 @@
   },
   "dependencies": {
     "@astrojs/react": "^4.4.2",
-    "astro": "^5.14.5",
-    "framer-motion": "^12.23.24",
+    "astro": "^7.2.9",
     "gsap": "^3.13.0",
-    "ogl": "^1.0.11",
     "three": "^0.181.0"
   },
   "devDependencies": {

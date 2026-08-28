@@ -13,6 +13,8 @@ export interface Props {
   logoUrl?: string;
   accentColor?: string;
   changeMenuColorOnOpen?: boolean;
+  menuButtonColor?: string;
+  openMenuButtonColor?: string;
   isFixed?: boolean;
 }
 
@@ -23,15 +25,17 @@ const {
   socialItems = [],
   displaySocials = true,
   displayItemNumbering = true,
-  logoUrl = '/src/assets/logos/reactbits-gh-white.svg',
+  logoUrl = '/favicon.svg',
   accentColor = '#5227FF',
   changeMenuColorOnOpen = true,
+  menuButtonColor = '#ffffff',
+  openMenuButtonColor = '#000000',
   isFixed = true
 } = Astro.props;
 ---
 
 <StaggeredMenuReact
-  client:load
+  client:idle
   position={position}
   colors={colors}
   items={items}
@@ -41,6 +45,8 @@ const {
   logoUrl={logoUrl}
   accentColor={accentColor}
   changeMenuColorOnOpen={changeMenuColorOnOpen}
+  menuButtonColor={menuButtonColor}
+  openMenuButtonColor={openMenuButtonColor}
   isFixed={isFixed}
 />
 

@@ -1,0 +1,238 @@
+---
+import '../styles/global.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const poster = '/assets/xiao-beidou-poster.png';
+---
+
+<BaseLayout title="PROJECTS">
+  <main class="projects-page" data-project-scene>
+    <section class="beidou-scroll" aria-labelledby="beidou-title">
+      <div class="scene-sticky">
+        <div class="image-stage" aria-hidden="true">
+          <img src={poster} alt="" loading="eager" decoding="async" />
+        </div>
+        <div class="blackout" aria-hidden="true"></div>
+
+        <div class="title-stage">
+          <p class="year">2025</p>
+          <h1 id="beidou-title">小北斗</h1>
+          <p class="intro">激光打击与智能识别一体化机器人作品</p>
+        </div>
+
+        <div class="scroll-cue" aria-hidden="true"></div>
+      </div>
+      <div class="scroll-run" aria-hidden="true"></div>
+    </section>
+  </main>
+
+  <script is:inline>
+    const scene = document.querySelector('[data-project-scene]');
+    const root = document.documentElement;
+
+    const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
+
+    const setProjectProgress = () => {
+      if (!scene) return;
+      const rect = scene.getBoundingClientRect();
+      const maxScroll = Math.max(1, window.innerHeight * 1.35);
+      const progress = Math.min(1, Math.max(0, -rect.top / maxScroll));
+
+      root.style.setProperty('--xb-progress', progress.toFixed(4));
+      root.style.setProperty('--xb-image-opacity', (1 - clamp((progress - 0.38) * 1.45, 0, 0.92)).toFixed(4));
+      root.style.setProperty('--xb-image-scale', (1.18 - progress * 0.12).toFixed(4));
+      root.style.setProperty('--xb-image-y', `${(-4 * progress).toFixed(3)}vh`);
+      root.style.setProperty('--xb-blackout-opacity', clamp((progress - 0.34) * 1.55, 0, 0.94).toFixed(4));
+      root.style.setProperty('--xb-title-opacity', clamp((progress - 0.28) * 2.8).toFixed(4));
+      root.style.setProperty('--xb-title-y', `${(5 - progress * 5).toFixed(3)}vh`);
+      root.style.setProperty('--xb-title-scale', (1.18 - progress * 0.18).toFixed(4));
+      root.style.setProperty('--xb-cue-opacity', (0.78 - clamp(progress * 1.8, 0, 0.78)).toFixed(4));
+    };
+
+    setProjectProgress();
+    window.addEventListener('scroll', setProjectProgress, { passive: true });
+    window.addEventListener('resize', setProjectProgress, { passive: true });
+  </script>
+</BaseLayout>
+
+<style>
+  :global(:root) {
+    --xb-progress: 0;
+    --xb-image-opacity: 1;
+    --xb-image-scale: 1.18;
+    --xb-image-y: 0vh;
+    --xb-blackout-opacity: 0;
+    --xb-title-opacity: 0;
+    --xb-title-y: 5vh;
+    --xb-title-scale: 1.18;
+    --xb-cue-opacity: 0.78;
+  }
+
+  .projects-page {
+    width: 100vw;
+    min-height: 360vh;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    background: #000;
+    color: #fff;
+    overflow-x: clip;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .beidou-scroll {
+    min-height: 360vh;
+  }
+
+  .scroll-run {
+    height: 260vh;
+    pointer-events: none;
+  }
+
+  .scene-sticky {
+    position: sticky;
+    top: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: hidden;
+    isolation: isolate;
+    background: #000;
+  }
+
+  .image-stage,
+  .blackout,
+  .title-stage {
+    position: absolute;
+    inset: 0;
+  }
+
+  .image-stage {
+    z-index: -3;
+    opacity: var(--xb-image-opacity);
+    transform: scale(var(--xb-image-scale)) translateY(var(--xb-image-y));
+    will-change: opacity, transform;
+  }
+
+  .image-stage img {
+    position: absolute;
+    left: 0;
+    bottom: -26%;
+    width: 100%;
+    height: 150%;
+    object-fit: cover;
+    object-position: center bottom;
+  }
+
+  .image-stage::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 50% 62%, rgba(15, 22, 30, 0.04), rgba(0, 0, 0, 0.7) 68%),
+      linear-gradient(180deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.98) 36%, rgba(0, 0, 0, 0.16) 64%, rgba(0, 0, 0, 0.82));
+  }
+
+  .blackout {
+    z-index: -2;
+    background: #000;
+    opacity: var(--xb-blackout-opacity);
+  }
+
+  .title-stage {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    display: grid;
+    align-content: start;
+    justify-items: center;
+    padding-top: clamp(7rem, 28vh, 18rem);
+    text-align: center;
+    pointer-events: none;
+    opacity: var(--xb-title-opacity);
+    transform: translateY(var(--xb-title-y)) scale(var(--xb-title-scale));
+    will-change: opacity, transform;
+  }
+
+  .year {
+    margin: 0 0 1.2rem;
+    color: rgba(220, 226, 232, 0.58);
+    font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+    letter-spacing: 0.28em;
+  }
+
+  h1 {
+    margin: 0;
+    color: #fff;
+    font-size: clamp(4.8rem, 13vw, 12rem);
+    font-weight: 900;
+    line-height: 0.88;
+    letter-spacing: 0;
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
+  }
+
+  .intro {
+    max-width: min(84vw, 46rem);
+    margin: clamp(1.2rem, 3vw, 2rem) 0 0;
+    background: linear-gradient(100deg, #7f8791 0%, #f3f5f7 42%, #9ba3ad 72%, #59616c 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    font-size: clamp(1.1rem, 2.8vw, 2rem);
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: 0.12em;
+  }
+
+  .scroll-cue {
+    position: absolute;
+    z-index: 3;
+    bottom: max(2rem, env(safe-area-inset-bottom));
+    left: 50%;
+    width: 3.2rem;
+    height: 3.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 999px;
+    transform: translateX(-50%);
+    opacity: var(--xb-cue-opacity);
+  }
+
+  .scroll-cue::before {
+    content: "";
+    position: absolute;
+    inset: 0.95rem 1.1rem 1.25rem;
+    border-right: 3px solid rgba(238, 242, 246, 0.82);
+    border-bottom: 3px solid rgba(238, 242, 246, 0.82);
+    transform: rotate(45deg);
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] .projects-page,
+  html[data-device='mobile'][data-orientation='portrait'] .beidou-scroll {
+    min-height: 340vh;
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] .image-stage img {
+    width: 112%;
+    height: 152%;
+    margin-left: -6%;
+    bottom: -23%;
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] .title-stage {
+    padding: max(7rem, 27vh) 1rem 0;
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] h1 {
+    font-size: clamp(4.2rem, 24vw, 6.4rem);
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] .intro {
+    font-size: clamp(1rem, 5.8vw, 1.45rem);
+    letter-spacing: 0.08em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .image-stage,
+    .title-stage {
+      transform: none;
+    }
+  }
+</style>

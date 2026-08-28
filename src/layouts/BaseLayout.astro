@@ -14,19 +14,27 @@ const { title } = Astro.props;
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
-    <link rel="stylesheet" href="/fonts.css" />
-    <head>
-  <!-- 其他 meta -->
-  
-  <!-- JetBrains Mono 全字重 + Inter（如果你还想保留 Inter 正文字体） -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.cat.net/css2?family=Inter:wght@400;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  
-  <!-- 如果你想用国内加速镜像（更快，尤其是国内用户）可以用这个 -->
-  <!-- <link href="https://fonts.cat.net/css2?family=Inter:wght@400;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"> -->
-</head>
+    <link rel="preconnect" href="https://fonts.cat.net" />
+    <link
+      href="https://fonts.cat.net/css2?family=Inter:wght@400;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script is:inline>
+      const setViewportMode = () => {
+        const root = document.documentElement;
+        const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+        const isNarrow = window.matchMedia('(max-width: 768px)').matches;
+        const isTabletPortrait = window.matchMedia('(max-width: 1024px) and (orientation: portrait)').matches;
+        const isMobile = isNarrow || (isCoarsePointer && isTabletPortrait);
 
+        root.dataset.device = isMobile ? 'mobile' : 'desktop';
+        root.dataset.orientation = window.matchMedia('(orientation: portrait)').matches ? 'portrait' : 'landscape';
+      };
+
+      setViewportMode();
+      window.addEventListener('resize', setViewportMode, { passive: true });
+      window.addEventListener('orientationchange', setViewportMode, { passive: true });
+    </script>
   </head>
 
   <body>
@@ -35,19 +43,22 @@ const { title } = Astro.props;
       items={[
         { label: 'Index', link: '/', ariaLabel: 'Go to home page' },
         { label: 'About', link: '/about/', ariaLabel: 'Learn about us' },
-        { label: 'Blog', link: '/blog/', ariaLabel: 'View blog' }
+        { label: 'Blog', link: '/blog/', ariaLabel: 'View blog' },
+        { label: 'PROJECTS', link: '/projects/', ariaLabel: 'View projects' }
       ]}
       socialItems={[
         { label: 'GitHub', link: 'https://github.com' }
       ]}
       position="right"
       accentColor="#5227FF"
+      menuButtonColor="#ffffff"
+      openMenuButtonColor="#000000"
+      changeMenuColorOnOpen={true}
       pointer-events="all"
     />
 
     <slot />
 
-    <!-- 背景层 -->
     <div class="site-backdrop" />
   </body>
 </html>

@@ -1,52 +1,91 @@
-@import url('https://fonts.cat.net/css2?family=Inter:wght@400;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
-
-code, pre, h1, .subtitle {
+code,
+pre,
+h1,
+.subtitle {
   font-family: 'JetBrains Mono', monospace;
 }
+
+html,
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
-
-
-
-.z-50 {
-  z-index: 50 ;
-}
-
-.z--1 {
-  z-index: -1 ;
-}
-
-html, body {
-  height: 100%;
+  min-height: 100%;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-}
-
-.md\:ml-64 {
-  margin-left: 16rem; /* 256px */
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background-color: transparent;
   margin: 0 auto;
   width: 100%;
-  max-width: 130ch;
-  padding: 2rem;
+  max-width: min(130ch, 100%);
+  padding: clamp(0.9rem, 2.2vw, 2rem);
   line-height: 1.5;
-  pointer-events: none;
 }
 
 * {
   box-sizing: border-box;
 }
-h1, h2, h3, h4, h5, h6, code, pre, .subtitle, .subtext {
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+code,
+pre,
+.subtitle,
+.subtext {
   font-family: 'JetBrains Mono', monospace !important;
 }
+
 h1 {
   margin: 1rem 0;
   font-size: 2.5rem;
 }
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+.z-50 {
+  z-index: 50;
+}
+
+.z--1 {
+  z-index: -1;
+}
+
+.md\:ml-64 {
+  margin-left: 16rem;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+html[data-device='mobile'][data-orientation='portrait'] {
+  min-height: 100dvh;
+  touch-action: manipulation;
+}
+
+html[data-device='mobile'][data-orientation='portrait'] body {
+  min-height: 100dvh;
+  max-width: 100%;
+  padding: max(0.75rem, env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-right))
+    max(0.75rem, env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left));
+  overflow-x: clip;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 0.9rem;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 8vw, 2.3rem);
+  }
+}

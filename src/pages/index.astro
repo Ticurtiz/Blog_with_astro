@@ -1,113 +1,145 @@
 ---
-// 完全保留你原来的代码
 import '../styles/global.css';
-import Footer from '../components/Footer.astro';  
+import Footer from '../components/Footer.astro';
 import ColorBends from '../components/ColorBends';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import TextType from '../components/TextType.jsx';
-const pageTitle = "首页";
-const menuItems = [
-  { label: 'Index', ariaLabel: 'Go to home page', link: '/' },
-  { label: 'About', ariaLabel: 'Learn about us', link: '/about/' },
-  { label: 'Blog', ariaLabel: 'View blog', link: '/blog/' }
-];
-
-const socialItems = [
-  { label: 'GitHub', link: 'https://github.com' },
-
-];
 ---
+
 <BaseLayout title="首页">
-<html lang="zh-cn">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator}>
-    <title>{pageTitle}</title>
+  <ColorBends client:idle className="ascii-bg" mouseInfluence={0.35} />
 
-    <link rel="stylesheet" href="/fonts.css" />
+  <main class="home-page">
+    <section class="hero" aria-labelledby="home-title">
+      <h1 id="home-title">
+        <span class="typing typing-title">Welcum to TAIKE</span>
+      </h1>
+      <p class="subtitle">
+        <span class="typing typing-subtitle">Under Construction...</span>
+      </p>
+      <p class="subtext">I am working hardly...</p>
+    </section>
+  </main>
 
-    <style>   
-
-
-        .site-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: -20; /* 确保它在所有东西的最底层 */
-  background: #000000; /* 纯黑色 */
-}
-
-      {
-        font-family: 'JetBrains Mono', monospace !important;
-        color: #ffffff !important;
-      }
-       h1 {
-        color: rgb(255, 255, 255);
-        font-size: 4rem;
-        font-family: 'JetBrains Mono', monospace;
-        margin: 0 0 1rem 0;
-      }
-
-      .subtitle {
-        color: rgb(255, 255, 255);
-        font-size: 2rem;
-        margin: 0.5rem 0;
-        font-family: 'JetBrains Mono', monospace;
-      }
-      .subtext {
-        color: rgb(255, 255, 255);
-        font-size: 1.2rem;
-        font-family: 'JetBrains Mono', monospace;
-        margin: 0;
-      }
-      .navigation-container {
-  padding-left: 2rem; /* 左边距 32px，适中偏左 */
-  /* 或者用 margin-left: 2rem; */
-  }
-
-    </style>
-  </head>
-   
-  <body>
-    </div>
-<ColorBends client:load className="ascii-bg" style={{}} />
-    
-    <div class="site-backdrop"></div>
-
-  <h1><div class=" relative items-center  text-center px-6 ">
-  <TextType 
-  client:load
-  text={["Welcum to TAIKE"]}
-  typingSpeed={39}
-  pauseDuration={1000}
-  showCursor={false}
-  cursorCharacter="|"
-  variableSpeed={false}
-  onSentenceComplete={() => {}}
-  z-index={50}
-/></h1>
-  <p class="subtitle">  
-    <TextType 
-    client:load
-    initialDelay={330}
-    typingSpeed={39}
-  text={["Under Construction..."]}
-  showCursor={false}
-  variableSpeed={false}
-  onSentenceComplete={() => {}}
-
-
-  
-  <p class="subtext">I am working hardly...</p>
-</div>
-
-<div class="fixed inset-x-0 bottom-0 z-50">
-
+  <div class="footer-bar">
     <Footer />
   </div>
-    <script>
-  
-    </script>
-  </body>
-</html>
+</BaseLayout>
+
+<style>
+  .home-page {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: grid;
+    place-items: center;
+    padding: 5rem 1rem 6rem;
+    color: #fff;
+  }
+
+  .hero {
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  h1 {
+    margin: 0 0 1rem;
+    color: #fff;
+    font-size: clamp(2.4rem, 8vw, 4rem);
+    line-height: 1.05;
+  }
+
+  .subtitle {
+    margin: 0.5rem 0;
+    color: #fff;
+    font-size: clamp(1.3rem, 4vw, 2rem);
+  }
+
+  .subtext {
+    margin: 0.75rem 0 0;
+    color: #fff;
+    font-size: clamp(1rem, 2.2vw, 1.2rem);
+  }
+
+  .typing {
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 0 solid transparent;
+  }
+
+  .typing-title {
+    width: 15ch;
+    animation: type-title 0.9s steps(15, end) both;
+  }
+
+  .typing-subtitle {
+    width: 21ch;
+    animation: type-subtitle 0.85s steps(21, end) 0.35s both;
+  }
+
+  .footer-bar {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 50;
+  }
+
+  @keyframes type-title {
+    from {
+      width: 0;
+    }
+  }
+
+  @keyframes type-subtitle {
+    from {
+      width: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .typing-title,
+    .typing-subtitle {
+      animation: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .typing {
+      width: auto;
+      white-space: normal;
+      animation: none;
+    }
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] .home-page {
+    place-items: start center;
+    padding: max(5.5rem, calc(env(safe-area-inset-top) + 4.75rem)) 0.75rem
+      max(6.5rem, calc(env(safe-area-inset-bottom) + 5.5rem));
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] .hero {
+    width: min(100%, 24rem);
+    min-height: calc(100dvh - 12rem);
+    display: grid;
+    align-content: center;
+    gap: 0.5rem;
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] h1 {
+    margin-bottom: 0.4rem;
+    font-size: clamp(2.15rem, 12vw, 3.1rem);
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] .subtitle {
+    font-size: clamp(1.2rem, 6.4vw, 1.7rem);
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] .subtext {
+    font-size: clamp(0.9rem, 4.6vw, 1.05rem);
+  }
+
+  html[data-device='mobile'][data-orientation='portrait'] .footer-bar {
+    padding-bottom: env(safe-area-inset-bottom);
+    font-size: 0.9rem;
+  }
+</style>
